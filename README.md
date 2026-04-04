@@ -7,4 +7,6 @@ Django Rest Framework + React 的示例
 ```bash
 uv init
 uv add django djangorestframework==3.7.1
+
+uv run django-admin startproject backend .
 ```
