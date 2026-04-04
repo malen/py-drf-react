@@ -19,6 +19,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ["homepage", "avatar"]
 
 
+class UserListSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "url",
+            "id",
+            "username",
+            "email",
+        ]
+
+
 # ModelSerializer
 # {
 #   "id": 1,
@@ -40,6 +51,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = [
+            "url",  # HyperlinkedModelSerializer 默认会添加一个 url 字段，指向该对象的详情页
             "id",
             "username",
             "email",
@@ -71,6 +83,17 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         return instance
 
 
+# ModelViewSet 自带 6 个接口，包括：
+# list（列表）
+# retrieve（详情）✅ 自动实现
+# create（创建）
+# update（更新）
+# delete（删除）
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def get_serializer_class(self):
+        if self.action in ["list"]:
+            return UserListSerializer
+        return UserSerializer
