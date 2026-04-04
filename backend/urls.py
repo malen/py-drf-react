@@ -15,6 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
@@ -24,6 +26,7 @@ from api.views import HelloWorldView, UserViewSet
 router = routers.DefaultRouter()
 router.register(r"users", UserViewSet)
 
+
 urlpatterns = [
     path("", include(router.urls)),  # 包含 DRF 自动生成的 URL
     path("admin/", admin.site.urls),
@@ -32,3 +35,9 @@ urlpatterns = [
     # url = reverse("hello-world")  # → /api/hello/
     path("api/hello/", HelloWorldView.as_view(), name="hello-world"),
 ]
+
+# +++++++++++++++++++++++++++++++++++++++++++++++
+# 新增：开发环境下允许访问 media 文件（头像、上传文件）
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# +++++++++++++++++++++++++++++++++++++++++++++++

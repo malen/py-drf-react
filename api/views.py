@@ -3,6 +3,8 @@ from rest_framework import serializers, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from api.models import UserProfile
+
 
 # Create your views here.
 class HelloWorldView(APIView):
@@ -11,6 +13,12 @@ class HelloWorldView(APIView):
 
 
 # ---------------------- 用户管理
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ["homepage", "avatar"]
+
+
 # ModelSerializer
 # {
 #   "id": 1,
@@ -26,9 +34,41 @@ class HelloWorldView(APIView):
 #   "category": "http://localhost:8000/api/categories/2/" // 超链接
 # }
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    # 因为模型中 UserProfile 是通过 OneToOneField 关联到 User 的，所以在 UserSerializer 中添加一个 profile 字段，使用 UserProfileSerializer 来序列化它。
+    profile = UserProfileSerializer()
+
     class Meta:
         model = User
-        fields = ["id", "username", "email", "first_name", "last_name"]
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "profile",
+        ]
+
+    def create(self, validated_data):
+        # 因为字段叫 profile，所以 pop("profile")
+        profile_data = validated_data.pop("profile", {})
+        user = User.objects.create(**validated_data)
+        UserProfile.objects.create(user=user, **profile_data)
+        return user
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop("profile", {})
+        instance.username = validated_data.get("username", instance.username)
+        instance.email = validated_data.get("email", instance.email)
+        instance.first_name = validated_data.get("first_name", instance.first_name)
+        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.save()
+
+        profile = instance.userprofile
+        profile.homepage = profile_data.get("homepage", profile.homepage)
+        profile.avatar = profile_data.get("avatar", profile.avatar)
+        profile.save()
+
+        return instance
 
 
 class UserViewSet(viewsets.ModelViewSet):
