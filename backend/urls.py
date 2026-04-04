@@ -14,9 +14,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from rest_framework import routers
+
+from api.views import HelloWorldView, UserViewSet
+
+router = routers.DefaultRouter()
+router.register(r"users", UserViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("", include(router.urls)),  # 包含 DRF 自动生成的 URL
+    path("admin/", admin.site.urls),
+    # 添加 HelloWorldView 的 URL
+    # 直接通过 name 获取 URL
+    # url = reverse("hello-world")  # → /api/hello/
+    path("api/hello/", HelloWorldView.as_view(), name="hello-world"),
 ]
