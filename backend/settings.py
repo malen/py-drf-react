@@ -43,6 +43,30 @@ INSTALLED_APPS = [
     "api",  # 自定义的 API 应用
 ]
 
+# DRF 全局配置（分页，权限，渲染）
+REST_FRAMEWORK = {
+    # 全局默认使用 HyperlinkedModelSerializer
+    "DEFAULT_MODEL_SERIALIZER_CLASS": "rest_framework.serializers.HyperlinkedModelSerializer",
+    # 默认权限
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly",  # 认证用户可以读写，未认证用户只能读
+    ],
+    # 全局分页
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",  # 使用页码分页
+    "PAGE_SIZE": 10,  # 每页默认显示 10 条数据
+    # 渲染器
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",  # 默认使用 JSON 渲染器
+        "rest_framework.renderers.BrowsableAPIRenderer",  # 开发环境下启用浏览器 API 界面
+    ],
+    # 解析器
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",  # 默认使用 JSON 解析器
+        "rest_framework.parsers.FormParser",  # 支持表单数据
+        "rest_framework.parsers.MultiPartParser",  # 支持文件上传
+    ],
+}
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

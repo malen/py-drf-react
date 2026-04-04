@@ -24,16 +24,17 @@ from rest_framework import routers
 from api.views import HelloWorldView, UserViewSet
 
 router = routers.DefaultRouter()
-router.register(r"users", UserViewSet)
-
+router.register(r"", UserViewSet)
 
 urlpatterns = [
-    path("", include(router.urls)),  # 包含 DRF 自动生成的 URL
+    path("users/", include(router.urls)),  # 包含 DRF 自动生成的 URL
     path("admin/", admin.site.urls),
     # 添加 HelloWorldView 的 URL
     # 直接通过 name 获取 URL
     # url = reverse("hello-world")  # → /api/hello/
     path("api/hello/", HelloWorldView.as_view(), name="hello-world"),
+    # 包含 books 应用的 URL
+    path("books/", include("api.books.urls")),  # 包含 books 应用的
 ]
 
 # +++++++++++++++++++++++++++++++++++++++++++++++

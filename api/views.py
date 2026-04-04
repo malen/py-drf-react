@@ -97,3 +97,8 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action in ["list"]:
             return UserListSerializer
         return UserSerializer
+
+
+# 图书的视图在 books/views.py 中实现，避免 api/views.py 过于臃肿
+# 如何创建books/views.py？直接在 api 目录下创建一个 books 目录，在 books 目录下创建一个 views.py 文件即可。
+# Serializer 也放在 books 目录下，创建一个 serializers.py 文件。
