@@ -21,7 +21,7 @@ from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
 
-from api.views import HelloWorldView, UserViewSet
+from api.views import HelloWorldView, LoginView, UserViewSet
 
 router = routers.DefaultRouter()
 router.register(r"", UserViewSet)
@@ -33,6 +33,7 @@ urlpatterns = [
     # 直接通过 name 获取 URL
     # url = reverse("hello-world")  # → /api/hello/
     path("api/hello/", HelloWorldView.as_view(), name="hello-world"),
+    path("api/login/", LoginView.as_view(), name="login"),
     # 包含 books 应用的 URL
     path("books/", include("api.books.urls")),  # 包含 books 应用的
 ]

@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
-from rest_framework import serializers, viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, serializers, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from api.models import UserProfile
 
@@ -93,12 +95,42 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    # 过滤 + 搜索 + 排序
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter,
+    ]
+    filterset_fields = ["username", "email"]  # 过滤字段
+    search_fields = ["username", "email", "first_name", "last_name"]  # 搜索字段
+    ordering_fields = ["username", "email"]  # 排序字段
+
     def get_serializer_class(self):
         if self.action in ["list"]:
             return UserListSerializer
         return UserSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        # 管理圆看全部，普通用户只看自己
+        if user.is_staff:
+            return User.objects.all().order_by("id")
+        return User.objects.filter(id=user.id)
+
 
 # 图书的视图在 books/views.py 中实现，避免 api/views.py 过于臃肿
 # 如何创建books/views.py？直接在 api 目录下创建一个 books 目录，在 books 目录下创建一个 views.py 文件即可。
 # Serializer 也放在 books 目录下，创建一个 serializers.py 文件。
+
+
+# JWT 登录接口
+class LoginView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        # 调用父类的 post 方法，获取 JWT token
+        response = super().post(request, *args, **kwargs)
+        # 获取用户信息
+        user = User.objects.get(username=request.data.get("username"))
+        user_data = UserSerializer(user, context={"request": request}).data
+        # 将用户信息添加到响应中
+        response.data["user"] = user_data
+        return response

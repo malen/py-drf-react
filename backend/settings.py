@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # 第三方依赖
     "rest_framework",  # Django REST framework
+    # 过滤和搜索
+    "django_filters",  # Django Filter
+    "drf_yasg",  # DRF Swagger 文档生成
     # 本地应用
     "api",  # 自定义的 API 应用
 ]
@@ -47,9 +50,21 @@ INSTALLED_APPS = [
 REST_FRAMEWORK = {
     # 全局默认使用 HyperlinkedModelSerializer
     "DEFAULT_MODEL_SERIALIZER_CLASS": "rest_framework.serializers.HyperlinkedModelSerializer",
+    # 全局默认认证方式
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        # "rest_framework.authentication.SessionAuthentication",  # 使用 Django 的 session 认证
+        # "rest_framework.authentication.BasicAuthentication",  # 支持基本认证（用户名和密码）
+        "rest_framework_simplejwt.authentication.JWTAuthentication",  # 使用 JWT 认证
+    ],
     # 默认权限
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",  # 认证用户可以读写，未认证用户只能读
+    ],
+    # 全局过滤和搜索配置
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",  # 支持 Django Filter 过滤
+        "rest_framework.filters.SearchFilter",  # 支持搜索过滤
+        "rest_framework.filters.OrderingFilter",  # 支持排序过滤
     ],
     # 全局分页
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",  # 使用页码分页
@@ -65,7 +80,33 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.FormParser",  # 支持表单数据
         "rest_framework.parsers.MultiPartParser",  # 支持文件上传
     ],
+    "EXCEPTION_HANDLER": "api.utils.exception_handler",  # 使用 DRF 默认的异常处理器
 }
+
+from datetime import timedelta
+
+# Simple JWT 配置
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),  # 访问令牌的有效期
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),  # 刷新令牌的有效期
+    "ROTATE_REFRESH_TOKENS": False,  # 是否在刷新访问令牌时生成新的刷新令牌
+    "BLACKLIST_AFTER_ROTATION": False,  # 是否在刷新令牌后将旧的刷新令牌加入黑名单
+    "ALGORITHM": "HS256",  # JWT 使用的加密算法
+    "SIGNING_KEY": SECRET_KEY,  # 用于签名 JWT 的密钥
+    "VERIFYING_KEY": None,  # 用于验证 JWT 的公钥（如果使用非对称加密算法）
+    "AUTH_HEADER_TYPES": ("Bearer",),  # 认证头中使用的前缀
+    "USER_ID_FIELD": "id",  # JWT 中包含用户 ID 的字段
+    "USER_ID_CLAIM": "user_id",  # JWT 中包含用户 ID 的声明
+    "AUTH_TOKEN_CLASSES": (
+        "rest_framework_simplejwt.tokens.AccessToken",
+    ),  # 访问令牌的类
+    "TOKEN_TYPE_CLAIM": "token_type",  # JWT 中包含令牌类型的声明
+    "JTI_CLAIM": "jti",  # JWT 中包含唯一标识符的声明
+}
+
+# Swagger 配置
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
