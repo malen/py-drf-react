@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from api.models import UserProfile
+from api.pagination import CustomPagination
 
 
 # Create your views here.
@@ -94,6 +95,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    pagination_class = CustomPagination  # 分页类，使用全局默认分页设置
 
     # 过滤 + 搜索 + 排序
     filter_backends = [
