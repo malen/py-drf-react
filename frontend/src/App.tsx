@@ -4,6 +4,12 @@ import { useState } from 'react'
 import { HelloWorld } from './components'
 import { List } from './components/03.List'
 import { Hooks } from './components/04.Hooks'
+import { OldForm, NewForm, NewForm2 } from './components/React19_Form'
+import { SuspenseDemo } from './components/React19_Suspense/SuspenseDemo'
+import { SuspenseNew } from './components/React19_Suspense/SuspenseNew'
+import SilentRefreshTable from './components/MUI_Table/SilentRefreshTable'
+import AutoRefreshTable from './components/MUI_Table/AutoRefreshTable'
+import PaginationSilentTable from './components/MUI_Table/PaginationSilentTable'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -20,7 +26,14 @@ function App() {
 
     <List /> */}
 
-    <Hooks />
+    {/* <Hooks /> */}
+    {/* <OldForm />
+    <NewForm />
+    <NewForm2 /> */}
+    {/* <SuspenseDemo /> */}
+    {/* <SuspenseNew /> */}
+    {/* <SilentRefreshTable /> */}
+    <PaginationSilentTable />
     </>
   )
 }

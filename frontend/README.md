@@ -107,3 +107,35 @@ const data = useRef(false);
 ```
 
 ## React19 新特性
+### 
+在React19中，我们可以直接将一个函数（Action）传递给原生Form元素的action属性。
+提交表单时，React会自动拦截提交事件，处理表单数据的序列化（Form Data），并调用自定义的Action函数。
+这意味着，我们可以告别onSubmit事件处理器和preventDefault()了。
+```jsx
+// 传统表单处理方式
+const OldForm = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        // ... 手动提交逻辑
+    };
+    return <form onSubmit={handleSubmit}>...</form>
+}
+
+// React19的新方式
+const NewForm = () => {
+    // 定义一个Action函数
+    const submitAction = async (formData: FormData) => {
+        const name = formData.get('name');
+        // .. 异步提交逻辑
+        await api.post('/users/', { name });
+    };
+    return (
+        <form action={submitAction}>
+            <input type="text" name="name" />
+            <button type="submit">Submit</button>
+        </form>
+    );
+}
+
+```
