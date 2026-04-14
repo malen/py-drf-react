@@ -84,3 +84,10 @@ ModelViewSet = 全功能王者，全部6个接口
 ReadOnlyModelViewSet = 只读专用
 APIView = 自由万能，自己写
 GenericAPIView + Mixin = 灵活拼装，自己选择
+
+
+## Semantic Kernel
+### 安装，目前最新版：1.36
+uv add semantic-kernel
+
+uv add python-dotenv
