@@ -1,3 +1,4 @@
+# 2. 第一个Hello World应用
 import asyncio
 import os
 
@@ -25,6 +26,7 @@ async def main():
             api_version="2024-02-15-preview",
         ),
         name="SK_Assistant",
+        # 指示
         instructions="你是一个有帮助的人工智能助手，协助用户解答问题和提供信息。",  # 智能体的行为指令
     )
 

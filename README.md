@@ -86,8 +86,7 @@ APIView = 自由万能，自己写
 GenericAPIView + Mixin = 灵活拼装，自己选择
 
 
-## Semantic Kernel
-### 安装，目前最新版：1.36
-uv add semantic-kernel
-
-uv add python-dotenv
+## 用DRF自带的功能，可跨数据库导出，导入
+# 如果主键都是uuid（自然键），而不是数字自增ID的话，不需要--natural-foreign --natural-primary
+uv run python manage.py dumpdata --natural-foreign --natural-primary -o backup.json
+uv run python manage.py loaddata backup.json
