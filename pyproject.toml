@@ -5,6 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "agent-framework>=1.7.0",
+    "agent-framework-a2a>=1.0.0b260528",
+    "agent-framework-azure-ai-search>=1.0.0b260521",
+    "agent-framework-gemini>=1.0.0a260521",
     "azure-search-documents>=11.6.0",
     "django>=6.0.3",
     "django-filter>=25.2",
